@@ -170,36 +170,6 @@
             </div>
         </section>
 
-        <!-- Chat Support Section -->
-        <section id="chat" class="section min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center">
-            <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg flex flex-col h-[70vh]">
-                <div class="p-4 border-b">
-                    <h2 class="text-xl font-bold text-center">AI First-Aid Chat</h2>
-                </div>
-                <div id="chat-history" class="flex-1 p-4 space-y-4 overflow-y-auto chat-history">
-                    <!-- Messages will appear here -->
-                    <div class="flex justify-start">
-                        <div class="bg-slate-200 p-3 rounded-lg max-w-xs">
-                            <p>Hello! I'm here to help. What's on your mind? You can also choose one of the common topics below.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4 border-t">
-                    <div class="flex flex-wrap gap-2 mb-2">
-                        <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-sm py-1 px-3 rounded-full">Feeling Anxious</button>
-                        <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-sm py-1 px-3 rounded-full">Stressed About Exams</button>
-                        <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-sm py-1 px-3 rounded-full">Feeling Sad</button>
-                    </div>
-                    <div class="flex items-center">
-                        <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 p-3 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
-                        <button id="chat-send-btn" class="bg-primary-dark text-white p-3 rounded-r-lg hover:bg-blue-700">
-                            <i data-lucide="send" class="w-6 h-6"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- Book a Session Section -->
         <section id="booking" class="section min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
@@ -437,6 +407,41 @@
         </form>
     </div>
 
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="hidden fixed bottom-20 right-5 w-80 sm:w-96 bg-white rounded-xl shadow-2xl z-40 flex flex-col">
+        <div class="p-3 border-b bg-slate-50 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold">AI First-Aid Chat</h2>
+            <button id="chat-widget-close" class="text-slate-500 hover:text-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div id="chat-history" class="flex-1 p-4 space-y-4 overflow-y-auto h-80 chat-history">
+            <!-- Messages will appear here -->
+            <div class="flex justify-start">
+                <div class="bg-slate-200 p-3 rounded-lg max-w-xs">
+                    <p>Hello! I'm here to help. What's on your mind? You can also choose one of the common topics below.</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-2 border-t">
+            <div class="flex flex-wrap gap-1 mb-2">
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Feeling Anxious</button>
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Stressed</button>
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Feeling Sad</button>
+            </div>
+            <div class="flex items-center">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <button id="chat-send-btn" class="bg-primary-dark text-white p-2 rounded-r-lg hover:bg-blue-700">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button id="chat-toggle-btn" class="hidden fixed bottom-5 right-5 bg-primary-dark text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-40 hover:bg-blue-700">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </button>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
@@ -479,11 +484,43 @@
             const mobileMenu = document.getElementById('mobile-menu');
             const ctaButtons = document.querySelectorAll('.cta-button');
 
+            const chatWidget = document.getElementById('chat-widget');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatWidgetClose = document.getElementById('chat-widget-close');
+
+            const openChatWidget = () => {
+                chatWidget.classList.remove('hidden');
+                chatToggleBtn.classList.add('hidden');
+            }
+
+            const closeChatWidget = () => {
+                chatWidget.classList.add('hidden');
+                chatToggleBtn.classList.remove('hidden');
+            }
+
+            chatToggleBtn.addEventListener('click', openChatWidget);
+            chatWidgetClose.addEventListener('click', closeChatWidget);
+
             const navigateTo = (hash) => {
+                // Handle chat navigation separately
+                if (hash === '#chat') {
+                    navigateTo('#home');
+                    openChatWidget();
+                    return;
+                }
+
                 // Hide all sections
                 sections.forEach(section => {
                     section.classList.remove('active');
                 });
+
+                // Show/hide chat toggle button based on page
+                if (hash === '#home') {
+                    chatToggleBtn.classList.remove('hidden');
+                } else {
+                    chatToggleBtn.classList.add('hidden');
+                    chatWidget.classList.add('hidden'); // also hide widget if open
+                }
 
                 // Show the target section
                 const targetSection = document.querySelector(hash);

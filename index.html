@@ -250,25 +250,25 @@
                     <!-- Articles Content -->
                     <div id="articles-content" class="resource-content">
                         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
-                                <img src="https://via.placeholder.com/400x250/dbeafe/4f46e5?text=MindWell" alt="" class="w-full h-40 object-cover">
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.nhs.uk/mental-health/children-and-young-adults/help-for-teenagers-young-adults-and-students/student-stress-self-help-tips/" data-article-title="Student stress - self-help tips">
+                                <img src="https://via.placeholder.com/400x250/dbeafe/4f46e5?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
                                 <div class="p-4">
-                                    <h3 class="font-bold">5 Ways to Manage Academic Stress</h3>
-                                    <p class="text-sm text-slate-600 mt-1">Learn practical tips for handling the pressure of your studies.</p>
+                                    <h3 class="font-bold">Student stress - self-help tips</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Practical, actionable tips for identifying and managing the sources of stress.</p>
                                 </div>
                             </div>
-                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
-                                <img src="https://via.placeholder.com/400x250/dcfce7/166534?text=MindWell" alt="" class="w-full h-40 object-cover">
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.mcleanhospital.org/essential/college-mh" data-article-title="A Student's Guide to College Mental Health">
+                                <img src="https://via.placeholder.com/400x250/dcfce7/166534?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
                                 <div class="p-4">
-                                    <h3 class="font-bold">Understanding Anxiety</h3>
-                                    <p class="text-sm text-slate-600 mt-1">A simple guide to what anxiety is and how it feels.</p>
+                                    <h3 class="font-bold">A Student's Guide to College Mental Health</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Learn the importance of diet, sleep, and exercise in maintaining your wellness.</p>
                                 </div>
                             </div>
-                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
-                                <img src="https://via.placeholder.com/400x250/fef9c3/b45309?text=MindWell" alt="" class="w-full h-40 object-cover">
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.mentalhealthfirstaid.org/2025/03/seven-self-care-tips-for-college-students/" data-article-title="Seven Self-care Tips for College Students">
+                                <img src="https://via.placeholder.com/400x250/fef9c3/b45309?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
                                 <div class="p-4">
-                                    <h3 class="font-bold">The Importance of Sleep</h3>
-                                    <p class="text-sm text-slate-600 mt-1">Discover how quality sleep can improve your mental health.</p>
+                                    <h3 class="font-bold">Seven Self-care Tips for College Students</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Discover seven key self-care strategies, including mindfulness and healthy habits.</p>
                                 </div>
                             </div>
                         </div>
@@ -317,19 +317,25 @@
                     <!-- Audio Content -->
                     <div id="audio-content" class="resource-content hidden">
                         <div class="space-y-4">
-                            <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-bold">Guided Meditation</h3>
-                                    <p class="text-sm text-slate-500">15:00</p>
+                            <div class="video-card bg-white p-4 rounded-lg shadow-md flex items-center justify-between cursor-pointer hover:shadow-lg hover:border-primary border border-transparent" data-video-url="https://www.youtube.com/embed/euCACO-KtHE">
+                                <div class="flex items-center gap-4">
+                                    <i data-lucide="play-circle" class="w-10 h-10 text-secondary"></i>
+                                    <div>
+                                        <h3 class="font-bold">10-Minute Guided Meditation for Students</h3>
+                                        <p class="text-sm text-slate-500">A short meditation to release doubt and find focus.</p>
+                                    </div>
                                 </div>
-                                <audio controls class="w-full max-w-xs"></audio>
+                                <p class="text-sm font-semibold text-slate-600">10:00</p>
                             </div>
-                            <div class="bg-white p-4 rounded-lg shadow-md flex items-center justify-between">
-                                <div>
-                                    <h3 class="font-bold">Calming Nature Sounds</h3>
-                                    <p class="text-sm text-slate-500">30:00</p>
+                             <div class="video-card bg-white p-4 rounded-lg shadow-md flex items-center justify-between cursor-pointer hover:shadow-lg hover:border-primary border border-transparent" data-video-url="https://www.youtube.com/embed/c2NmyoXBXmE">
+                                <div class="flex items-center gap-4">
+                                    <i data-lucide="play-circle" class="w-10 h-10 text-secondary"></i>
+                                    <div>
+                                        <h3 class="font-bold">Relaxing Forest River Sounds</h3>
+                                        <p class="text-sm text-slate-500">Natural sounds of water and birds for sleep or study.</p>
+                                    </div>
                                 </div>
-                                <audio controls class="w-full max-w-xs"></audio>
+                                <p class="text-sm font-semibold text-slate-600">3:00:00</p>
                             </div>
                         </div>
                     </div>
@@ -787,7 +793,19 @@
             };
 
             // Article Modal
-            resourceCards.forEach(card => card.addEventListener('click', () => openModal(articleModal)));
+            const articleModalTitle = document.getElementById('article-modal-title');
+            const articleModalContent = document.getElementById('article-modal-content');
+            resourceCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const title = card.dataset.articleTitle;
+                    const url = card.dataset.articleUrl;
+                    if (title && url) {
+                        articleModalTitle.textContent = title;
+                        articleModalContent.innerHTML = `<p>You are being redirected to an external article. Click the link below to continue.</p><a href="${url}" target="_blank" rel="noopener noreferrer" class="text-primary-dark font-bold hover:underline mt-4 inline-block">Read Full Article &rarr;</a>`;
+                        openModal(articleModal);
+                    }
+                });
+            });
             articleModalClose.addEventListener('click', () => closeModal(articleModal));
 
             // Video Modal

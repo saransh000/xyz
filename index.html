@@ -466,9 +466,21 @@
 
             const performLogin = (e) => {
                 e.preventDefault();
+                const role = e.target.id;
                 loginSection.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-                initializeApp();
+
+                if (role === 'admin-login') {
+                    const adminDashboard = document.getElementById('admin-dashboard');
+                    const adminLogoutBtn = document.getElementById('admin-logout-btn');
+                    adminDashboard.classList.remove('hidden');
+                    adminLogoutBtn.addEventListener('click', () => {
+                        adminDashboard.classList.add('hidden');
+                        loginSection.classList.remove('hidden');
+                    }, { once: true }); // Use { once: true } if this setup runs multiple times
+                } else {
+                    appContainer.classList.remove('hidden');
+                    initializeApp();
+                }
             };
 
             loginForms.forEach(form => {
@@ -773,5 +785,112 @@
         });
     </script>
     </div>
+
+    <!-- Admin Dashboard -->
+    <main id="admin-dashboard" class="hidden bg-slate-100 min-h-screen">
+        <div class="flex">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-slate-800 text-white p-6 flex-shrink-0">
+                <div class="flex items-center space-x-2 mb-10">
+                    <div class="bg-primary-dark rounded-full p-1 text-white">
+                        <i data-lucide="sprout" class="w-8 h-8"></i>
+                    </div>
+                    <span class="text-2xl font-bold">MindWell</span>
+                </div>
+                <nav class="space-y-4">
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg bg-slate-700 font-semibold"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="users"></i> Students</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="calendar"></i> Bookings</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="message-circle"></i> Messages</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="settings"></i> Settings</a>
+                </nav>
+            </aside>
+            <!-- Main content -->
+            <div class="flex-1 p-10">
+                <header class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-slate-800">Admin Dashboard</h1>
+                    <button id="admin-logout-btn" class="flex items-center gap-2 text-slate-600 hover:text-primary-dark">
+                        <i data-lucide="log-out" class="w-5 h-5"></i> Logout
+                    </button>
+                </header>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="users" class="w-12 h-12 text-blue-500"></i>
+                        <div>
+                            <p class="text-slate-500">Total Students</p>
+                            <p class="text-3xl font-bold">1,250</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="calendar-check" class="w-12 h-12 text-green-500"></i>
+                        <div>
+                            <p class="text-slate-500">Active Sessions</p>
+                            <p class="text-3xl font-bold">82</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="user-plus" class="w-12 h-12 text-yellow-500"></i>
+                        <div>
+                            <p class="text-slate-500">New Signups (Month)</p>
+                            <p class="text-3xl font-bold">104</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="alert-circle" class="w-12 h-12 text-red-500"></i>
+                        <div>
+                            <p class="text-slate-500">Open Alerts</p>
+                            <p class="text-3xl font-bold">3</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table and Chart -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Recent Student Activity</h2>
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="p-2">Student ID</th>
+                                    <th class="p-2">Last Login</th>
+                                    <th class="p-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU5821</td>
+                                    <td class="p-2">2024-09-05 10:30 AM</td>
+                                    <td class="p-2"><span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Active</span></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU9434</td>
+                                    <td class="p-2">2024-09-05 09:15 AM</td>
+                                    <td class="p-2"><span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Active</span></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU1092</td>
+                                    <td class="p-2">2024-09-04 03:00 PM</td>
+                                    <td class="p-2"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Inactive</span></td>
+                                </tr>
+                                 <tr>
+                                    <td class="p-2 font-mono">#STU7365</td>
+                                    <td class="p-2">2024-09-02 11:45 AM</td>
+                                    <td class="p-2"><span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Flagged</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Platform Usage</h2>
+                        <div class="bg-slate-100 h-64 flex items-center justify-center rounded-lg">
+                            <p class="text-slate-500">[Chart Placeholder]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 </body>
 </html>

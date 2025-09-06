@@ -168,6 +168,15 @@
                     <p class="text-slate-600">Connect with fellow students in a safe, anonymous forum to share experiences and support.</p>
                 </div>
             </div>
+
+            <!-- Quote of the Day -->
+            <div class="mt-20 max-w-3xl mx-auto">
+                <h3 class="text-lg font-semibold text-slate-500 mb-4">Quote of the Day</h3>
+                <blockquote class="text-2xl italic text-slate-700">
+                    "Happiness can be found even in the darkest of times, if one only remembers to turn on the light."
+                </blockquote>
+                <cite class="block text-right mt-2 text-slate-500">&mdash; Albus Dumbledore</cite>
+            </div>
         </section>
 
         <!-- Book a Session Section -->
@@ -267,16 +276,40 @@
                     <!-- Videos Content -->
                     <div id="videos-content" class="resource-content hidden">
                         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer">
+                            <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/l_9PchV6PIc">
                                 <div class="relative">
-                                    <img src="https://via.placeholder.com/400x250/e0f2fe/0891b2?text=Play+Video" alt="" class="w-full h-40 object-cover">
+                                    <img src="https://img.youtube.com/vi/l_9PchV6PIc/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
                                     <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
                                         <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
                                     </div>
                                 </div>
                                 <div class="p-4">
-                                    <h3 class="font-bold">Guided Meditation for Focus</h3>
-                                    <p class="text-sm text-slate-600 mt-1">A 10-minute guided meditation to clear your mind.</p>
+                                    <h3 class="font-bold">Your Mental Health in College | Crash Course</h3>
+                                    <p class="text-sm text-slate-600 mt-1">A practical guide to navigating mental health at school.</p>
+                                </div>
+                            </div>
+                             <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/JEtNxNW0bRU">
+                                <div class="relative">
+                                    <img src="https://img.youtube.com/vi/JEtNxNW0bRU/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                        <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold">The College Student Mental Health Crisis | TEDx</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Dr. Tim Bono discusses the psychology of student happiness.</p>
+                                </div>
+                            </div>
+                             <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/qpRmtMDwKl4">
+                                <div class="relative">
+                                    <img src="https://img.youtube.com/vi/qpRmtMDwKl4/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                        <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold">Managing Your College Life | Supporting Wellbeing</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Tips for managing your new lifestyle and emotions.</p>
                                 </div>
                             </div>
                         </div>
@@ -760,9 +793,11 @@
             // Video Modal
             videoCards.forEach(card => {
                 card.addEventListener('click', () => {
-                    // Placeholder YouTube video
-                    videoModalContent.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/O-6f5wQXSu8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                    openModal(videoModal);
+                    const videoUrl = card.dataset.videoUrl;
+                    if (videoUrl) {
+                        videoModalContent.innerHTML = `<iframe class="w-full h-full" src="${videoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                        openModal(videoModal);
+                    }
                 });
             });
             videoModalClose.addEventListener('click', () => closeModal(videoModal));

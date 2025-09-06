@@ -60,8 +60,55 @@
 </head>
 <body class="bg-light text-slate-800">
 
-    <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50">
+    <!-- Login Section -->
+    <section id="login" class="min-h-screen flex items-center justify-center bg-slate-100">
+        <div class="max-w-md w-full bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex items-center justify-center space-x-2 mb-6">
+                <div class="bg-primary-dark rounded-full p-1 text-white">
+                    <i data-lucide="sprout" class="w-8 h-8"></i>
+                </div>
+                <span class="text-2xl font-bold text-slate-800">MindWell</span>
+            </div>
+
+            <!-- Login Tabs -->
+            <div class="mb-4 border-b border-gray-200">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button class="login-tab active-tab whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg border-primary text-primary" data-target="student-login">Student</button>
+                    <button class="login-tab whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg border-transparent text-slate-500 hover:text-slate-700 hover:border-gray-300" data-target="admin-login">Admin</button>
+                </nav>
+            </div>
+
+            <!-- Student Login Form -->
+            <form id="student-login" class="login-form space-y-4">
+                <div>
+                    <label for="student-id" class="block text-sm font-medium text-slate-700">Student ID</label>
+                    <input type="text" id="student-id" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="student-password" class="block text-sm font-medium text-slate-700">Password</label>
+                    <input type="password" id="student-password" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-dark hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark">Login</button>
+            </form>
+
+            <!-- Admin Login Form -->
+            <form id="admin-login" class="login-form hidden space-y-4">
+                <div>
+                    <label for="admin-id" class="block text-sm font-medium text-slate-700">Admin ID</label>
+                    <input type="text" id="admin-id" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="admin-password" class="block text-sm font-medium text-slate-700">Password</label>
+                    <input type="password" id="admin-password" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">Login</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="app-container" class="hidden">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-2">
@@ -394,7 +441,39 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
 
-            const sections = document.querySelectorAll('.section');
+            // --- Login Logic ---
+            const loginSection = document.getElementById('login');
+            const appContainer = document.getElementById('app-container');
+            const loginTabs = document.querySelectorAll('.login-tab');
+            const loginForms = document.querySelectorAll('.login-form');
+
+            loginTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    loginTabs.forEach(t => t.classList.remove('active-tab', 'border-primary', 'text-primary'));
+                    tab.classList.add('active-tab', 'border-primary', 'text-primary');
+
+                    const target = document.getElementById(tab.dataset.target);
+
+                    loginForms.forEach(form => form.classList.add('hidden'));
+                    if(target) target.classList.remove('hidden');
+                });
+            });
+
+            const performLogin = (e) => {
+                e.preventDefault();
+                loginSection.classList.add('hidden');
+                appContainer.classList.remove('hidden');
+                initializeApp();
+            };
+
+            loginForms.forEach(form => {
+                form.addEventListener('submit', performLogin);
+            });
+
+
+            // --- Main App Initialization ---
+            const initializeApp = () => {
+                const sections = document.querySelectorAll('.section');
             const navLinks = document.querySelectorAll('.nav-link');
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -653,7 +732,9 @@
                 closeModal(videoModal);
                 closeModal(newPostModal);
             });
+        }
         });
     </script>
+    </div>
 </body>
 </html>

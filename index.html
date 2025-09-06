@@ -642,13 +642,6 @@
             const chatSendBtn = document.getElementById('chat-send-btn');
             const chatPromptBtns = document.querySelectorAll('.chat-prompt-btn');
 
-            const botResponses = {
-                anxious: "It's completely understandable to feel anxious. Try a simple grounding exercise: name 5 things you can see, 4 things you can touch, 3 things you can hear, 2 things you can smell, and 1 thing you can taste. This can help bring you back to the present moment.",
-                stress: "Exam stress is very common. Remember to take short breaks while studying. A 5-minute break every hour can actually improve your focus. Also, make sure you're getting enough sleep.",
-                sad: "I'm sorry to hear you're feeling sad. Sometimes, doing something small and kind for yourself can help. Maybe listen to a favorite song, or watch a comforting movie. Your feelings are valid.",
-                default: "Thank you for sharing. It takes courage to speak about your feelings. A helpful first step can often be focusing on your breathing. Try a slow, deep breath in, and a long, slow breath out."
-            };
-
             const addMessage = (message, sender) => {
                 const messageElement = document.createElement('div');
                 messageElement.classList.add('flex', 'mb-4');
@@ -682,16 +675,33 @@
                 return botResponses.default;
             };
 
-            const handleUserMessage = (message) => {
+            const handleUserMessage = async (message) => {
                 if (!message.trim()) return;
 
                 addMessage(message, 'user');
                 chatInput.value = '';
 
-                setTimeout(() => {
-                    const botMessage = getBotResponse(message);
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    const botMessage = data.reply;
                     addMessage(botMessage, 'bot');
-                }, 1500);
+
+                } catch (error) {
+                    console.error('Error fetching bot response:', error);
+                    addMessage("I'm having trouble connecting to my brain right now. Please try again in a moment.", 'bot');
+                }
             };
 
             chatSendBtn.addEventListener('click', () => handleUserMessage(chatInput.value));

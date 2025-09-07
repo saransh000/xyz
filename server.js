@@ -20,9 +20,9 @@ app.get('/', (req, res) => {
 app.post('/api/chat', async (req, res) => {
     const userMessage = req.body.message;
     const geminiApiKey = process.env.GEMINI_API_KEY;
-    const geminiApiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+    const geminiApiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-    // Custom prompt will be retrieved from environment variables later
+    // Custom prompt will be retrieved from environment variables
     const customPrompt = process.env.CUSTOM_PROMPT || "You are a friendly and supportive mental health assistant for college students. Your name is MindWell. Keep your responses concise, empathetic, and helpful. Do not provide medical advice.";
 
     if (!userMessage) {
@@ -45,13 +45,19 @@ app.post('/api/chat', async (req, res) => {
         const prompt = `${customPrompt}\n\nUser: ${userMessage}\nMindWell:`;
 
         const response = await axios.post(
-            `${geminiApiUrl}?key=${geminiApiKey}`,
+            geminiApiUrl,
             {
                 contents: [{
                     parts: [{
                         text: prompt
                     }]
                 }]
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-goog-api-key': geminiApiKey
+                }
             }
         );
 

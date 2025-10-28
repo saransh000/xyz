@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindWell - Your Space for Mental Wellness</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .active-link {
+            color: #2563eb; /* text-blue-600 */
+            font-weight: 600;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        /* Hide scrollbar for chat history */
+        .chat-history::-webkit-scrollbar {
+            display: none;
+        }
+        .chat-history {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#3b82f6', // blue-500
+                            dark: '#2563eb' // blue-600
+                        },
+                        secondary: '#14b8a6', // teal-500
+                        accent: '#f97316', // orange-500
+                        light: '#f8fafc' // slate-50
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-light text-slate-800">
+
+    <!-- Login Section -->
+    <section id="login" class="min-h-screen flex items-center justify-center bg-slate-100">
+        <div class="max-w-md w-full bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex items-center justify-center space-x-2 mb-6">
+                <div class="bg-primary-dark rounded-full p-1 text-white">
+                    <i data-lucide="sprout" class="w-8 h-8"></i>
+                </div>
+                <span class="text-2xl font-bold text-slate-800">MindWell</span>
+            </div>
+
+            <!-- Login Tabs -->
+            <div class="mb-4 border-b border-gray-200">
+                <nav class="-mb-px flex space-x-6" aria-label="Tabs">
+                    <button class="login-tab active-tab whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg border-primary text-primary" data-target="student-login">Student</button>
+                    <button class="login-tab whitespace-nowrap pb-4 px-1 border-b-2 font-medium text-lg border-transparent text-slate-500 hover:text-slate-700 hover:border-gray-300" data-target="admin-login">Admin</button>
+                </nav>
+            </div>
+
+            <!-- Student Login Form -->
+            <form id="student-login" class="login-form space-y-4">
+                <div>
+                    <label for="student-id" class="block text-sm font-medium text-slate-700">Student ID</label>
+                    <input type="text" id="student-id" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="student-password" class="block text-sm font-medium text-slate-700">Password</label>
+                    <input type="password" id="student-password" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-dark hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-dark">Login</button>
+            </form>
+
+            <!-- Admin Login Form -->
+            <form id="admin-login" class="login-form hidden space-y-4">
+                <div>
+                    <label for="admin-id" class="block text-sm font-medium text-slate-700">Admin ID</label>
+                    <input type="text" id="admin-id" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <div>
+                    <label for="admin-password" class="block text-sm font-medium text-slate-700">Password</label>
+                    <input type="password" id="admin-password" class="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-primary focus:border-primary">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-secondary hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">Login</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="app-container" class="hidden">
+        <!-- Header -->
+        <header class="bg-white/80 backdrop-blur-md shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-primary-dark rounded-full p-1 text-white">
+                        <i data-lucide="sprout" class="w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-bold text-slate-800">MindWell</span>
+                </div>
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#home" class="nav-link active-link">Home</a>
+                    <a href="#chat" class="nav-link">Chat Support</a>
+                    <a href="#booking" class="nav-link">Book a Session</a>
+                    <a href="#resources" class="nav-link">Resources</a>
+                    <a href="#community" class="nav-link">Community</a>
+                </nav>
+                <button id="mobile-menu-button" class="md:hidden">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden px-4 pb-4 space-y-2">
+             <a href="#home" class="nav-link block active-link">Home</a>
+             <a href="#chat" class="nav-link block">Chat Support</a>
+             <a href="#booking" class="nav-link block">Book a Session</a>
+             <a href="#resources" class="nav-link block">Resources</a>
+             <a href="#community" class="nav-link block">Community</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16">
+        <!-- Home Section -->
+        <section id="home" class="section active min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">Your Space for <span class="text-primary-dark">Mental Wellness</span></h1>
+                <p class="mt-4 text-lg text-slate-600">Accessible, stigma-free mental health support, right when you need it. You are not alone.</p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <button data-target="chat" class="cta-button bg-primary-dark hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">Talk to Someone</button>
+                    <button data-target="resources" class="cta-button bg-secondary hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">Explore Resources</button>
+                </div>
+            </div>
+            <div class="mt-20 grid md:grid-cols-3 gap-8 text-left">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <i data-lucide="message-circle" class="w-10 h-10 text-primary-dark mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">24/7 Chat Support</h3>
+                    <p class="text-slate-600">Get immediate, AI-guided support for moments of stress or anxiety, anytime, anywhere.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <i data-lucide="calendar-check" class="w-10 h-10 text-secondary mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Confidential Counseling</h3>
+                    <p class="text-slate-600">Easily book a private session with a qualified mental health professional.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <i data-lucide="users" class="w-10 h-10 text-accent mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Peer Community</h3>
+                    <p class="text-slate-600">Connect with fellow students in a safe, anonymous forum to share experiences and support.</p>
+                </div>
+            </div>
+
+            <!-- Quote of the Day -->
+            <div class="mt-20 max-w-3xl mx-auto">
+                <h3 class="text-lg font-semibold text-slate-500 mb-4">Quote of the Day</h3>
+                <blockquote class="text-2xl italic text-slate-700">
+                    "Happiness can be found even in the darkest of times, if one only remembers to turn on the light."
+                </blockquote>
+                <cite class="block text-right mt-2 text-slate-500">&mdash; Albus Dumbledore</cite>
+            </div>
+        </section>
+
+        <!-- Book a Session Section -->
+        <section id="booking" class="section min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+                <h2 class="text-3xl font-bold text-center mb-6">Book a Confidential Session</h2>
+
+                <!-- Step 1: Choose Service -->
+                <div id="booking-step-1">
+                    <h3 class="text-xl font-semibold mb-4">Step 1: Choose a Service</h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <button class="booking-service-btn text-left p-4 border rounded-lg hover:border-primary hover:shadow-md">
+                            <i data-lucide="video" class="w-8 h-8 text-primary mb-2"></i>
+                            <h4 class="font-bold">Online Counseling</h4>
+                            <p class="text-sm text-slate-600">Video session with a professional.</p>
+                        </button>
+                        <button class="booking-service-btn text-left p-4 border rounded-lg hover:border-primary hover:shadow-md">
+                            <i data-lucide="building" class="w-8 h-8 text-secondary mb-2"></i>
+                            <h4 class="font-bold">In-Person Session</h4>
+                            <p class="text-sm text-slate-600">Meet face-to-face at the wellness center.</p>
+                        </button>
+                        <button class="booking-service-btn text-left p-4 border rounded-lg hover:border-primary hover:shadow-md">
+                            <i data-lucide="phone" class="w-8 h-8 text-accent mb-2"></i>
+                            <h4 class="font-bold">Mental Health Helpline</h4>
+                            <p class="text-sm text-slate-600">Immediate phone support.</p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Select Date & Time -->
+                <div id="booking-step-2" class="hidden">
+                    <h3 class="text-xl font-semibold mb-4">Step 2: Select a Date & Time</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Mon, 9:00 AM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Mon, 2:00 PM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Tue, 11:30 AM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Tue, 4:00 PM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Wed, 10:00 AM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Thu, 1:00 PM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Fri, 9:30 AM</button>
+                        <button class="booking-time-btn p-3 border rounded-lg hover:bg-primary-dark hover:text-white">Fri, 3:00 PM</button>
+                    </div>
+                     <button id="booking-back-btn" class="mt-6 text-sm text-slate-600 hover:text-primary">&larr; Back to services</button>
+                </div>
+
+                <!-- Step 3: Confirmation -->
+                <div id="booking-step-3" class="hidden text-center">
+                    <i data-lucide="check-circle" class="w-16 h-16 text-green-500 mx-auto mb-4"></i>
+                    <h3 class="text-2xl font-bold">Session Booked!</h3>
+                    <p id="booking-confirmation-msg" class="mt-2 text-slate-600">Your session at [Selected Time] is confirmed. You will receive a confidential confirmation email shortly.</p>
+                    <button id="book-another-btn" class="mt-6 bg-primary-dark hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Book Another Session</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resources Section -->
+        <section id="resources" class="section min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <h2 class="text-3xl font-bold text-center mb-8">Resource Hub</h2>
+            <div class="max-w-4xl mx-auto">
+                <!-- Tabs -->
+                <div class="border-b border-gray-200">
+                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button class="resource-tab active-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-primary text-primary">Articles</button>
+                        <button class="resource-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-slate-500 hover:text-slate-700 hover:border-gray-300">Videos</button>
+                        <button class="resource-tab whitespace-nowrap py-4 px-1 border-b-2 font-medium text-lg border-transparent text-slate-500 hover:text-slate-700 hover:border-gray-300">Relaxation Audio</button>
+                    </nav>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="mt-8">
+                    <!-- Articles Content -->
+                    <div id="articles-content" class="resource-content">
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.nhs.uk/mental-health/children-and-young-adults/help-for-teenagers-young-adults-and-students/student-stress-self-help-tips/" data-article-title="Student stress - self-help tips">
+                                <img src="https://via.placeholder.com/400x250/dbeafe/4f46e5?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-bold">Student stress - self-help tips</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Practical, actionable tips for identifying and managing the sources of stress.</p>
+                                </div>
+                            </div>
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.mcleanhospital.org/essential/college-mh" data-article-title="A Student's Guide to College Mental Health">
+                                <img src="https://via.placeholder.com/400x250/dcfce7/166534?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-bold">A Student's Guide to College Mental Health</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Learn the importance of diet, sleep, and exercise in maintaining your wellness.</p>
+                                </div>
+                            </div>
+                            <div class="resource-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-article-url="https://www.mentalhealthfirstaid.org/2025/03/seven-self-care-tips-for-college-students/" data-article-title="Seven Self-care Tips for College Students">
+                                <img src="https://via.placeholder.com/400x250/fef9c3/b45309?text=Read+Article" alt="Article thumbnail" class="w-full h-40 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-bold">Seven Self-care Tips for College Students</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Discover seven key self-care strategies, including mindfulness and healthy habits.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Videos Content -->
+                    <div id="videos-content" class="resource-content hidden">
+                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/l_9PchV6PIc">
+                                <div class="relative">
+                                    <img src="https://img.youtube.com/vi/l_9PchV6PIc/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                        <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold">Your Mental Health in College | Crash Course</h3>
+                                    <p class="text-sm text-slate-600 mt-1">A practical guide to navigating mental health at school.</p>
+                                </div>
+                            </div>
+                             <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/JEtNxNW0bRU">
+                                <div class="relative">
+                                    <img src="https://img.youtube.com/vi/JEtNxNW0bRU/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                        <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold">The College Student Mental Health Crisis | TEDx</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Dr. Tim Bono discusses the psychology of student happiness.</p>
+                                </div>
+                            </div>
+                             <div class="video-card bg-white rounded-xl shadow-md overflow-hidden cursor-pointer" data-video-url="https://www.youtube.com/embed/qpRmtMDwKl4">
+                                <div class="relative">
+                                    <img src="https://img.youtube.com/vi/qpRmtMDwKl4/hqdefault.jpg" alt="Video thumbnail" class="w-full h-40 object-cover">
+                                    <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                        <i data-lucide="play-circle" class="w-16 h-16 text-white"></i>
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-bold">Managing Your College Life | Supporting Wellbeing</h3>
+                                    <p class="text-sm text-slate-600 mt-1">Tips for managing your new lifestyle and emotions.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Audio Content -->
+                    <div id="audio-content" class="resource-content hidden">
+                        <div class="space-y-4">
+                            <div class="video-card bg-white p-4 rounded-lg shadow-md flex items-center justify-between cursor-pointer hover:shadow-lg hover:border-primary border border-transparent" data-video-url="https://www.youtube.com/embed/euCACO-KtHE">
+                                <div class="flex items-center gap-4">
+                                    <i data-lucide="play-circle" class="w-10 h-10 text-secondary"></i>
+                                    <div>
+                                        <h3 class="font-bold">10-Minute Guided Meditation for Students</h3>
+                                        <p class="text-sm text-slate-500">A short meditation to release doubt and find focus.</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-600">10:00</p>
+                            </div>
+                             <div class="video-card bg-white p-4 rounded-lg shadow-md flex items-center justify-between cursor-pointer hover:shadow-lg hover:border-primary border border-transparent" data-video-url="https://www.youtube.com/embed/c2NmyoXBXmE">
+                                <div class="flex items-center gap-4">
+                                    <i data-lucide="play-circle" class="w-10 h-10 text-secondary"></i>
+                                    <div>
+                                        <h3 class="font-bold">Relaxing Forest River Sounds</h3>
+                                        <p class="text-sm text-slate-500">Natural sounds of water and birds for sleep or study.</p>
+                                    </div>
+                                </div>
+                                <p class="text-sm font-semibold text-slate-600">3:00:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Forum Section -->
+        <section id="community" class="section min-h-screen container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold">Community Forum</h2>
+                    <button id="new-post-btn" class="bg-secondary hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2">
+                        <i data-lucide="plus" class="w-5 h-5"></i> New Post
+                    </button>
+                </div>
+                <div class="space-y-6">
+                    <!-- Forum Post -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-slate-200 rounded-full p-2">
+                                <i data-lucide="user-circle" class="w-8 h-8 text-slate-500"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg">How do you cope with exam pressure?</h3>
+                                <p class="text-sm text-slate-500">Posted by StudentVoice23 &bull; 2 hours ago</p>
+                                <p class="mt-2 text-slate-700">Exams are coming up and I'm feeling overwhelmed. What are some healthy ways you all deal with the stress? Looking for any tips that might help.</p>
+                                <p class="mt-4 text-sm font-semibold text-primary-dark">3 replies</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Forum Post -->
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-slate-200 rounded-full p-2">
+                                <i data-lucide="user-circle" class="w-8 h-8 text-slate-500"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg">Feeling lonely on campus</h3>
+                                <p class="text-sm text-slate-500">Posted by QuietObserver &bull; 1 day ago</p>
+                                <p class="mt-2 text-slate-700">I'm a first-year and I'm having a hard time making friends. It feels like everyone already has their groups. Any advice?</p>
+                                <p class="mt-4 text-sm font-semibold text-primary-dark">8 replies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-100 border-t mt-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="text-center text-slate-500">
+                <p class="font-bold text-lg">MindWell</p>
+                <div class="flex justify-center space-x-6 my-4">
+                    <a href="#" class="hover:text-primary">About Us</a>
+                    <a href="#" class="hover:text-primary">Privacy Policy</a>
+                    <a href="#" class="hover:text-primary">Contact Us</a>
+                </div>
+                <p class="text-xs">&copy; 2024 MindWell. All rights reserved.</p>
+                <p class="text-xs mt-2 italic">Disclaimer: This platform is for first-aid support and does not replace professional medical advice.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/60 z-50 hidden"></div>
+
+    <!-- Article Modal -->
+    <div id="article-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-2xl bg-white rounded-xl shadow-lg z-50 hidden p-6">
+        <h2 id="article-modal-title" class="text-2xl font-bold mb-4">Article Title</h2>
+        <div id="article-modal-content" class="text-slate-600 space-y-4">
+            <p>This is mock content for the article. In a real application, the full text of the article would be loaded here.</p>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+        </div>
+        <button id="article-modal-close" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-2xl bg-white rounded-xl shadow-lg z-50 hidden p-2">
+        <div id="video-modal-content" class="aspect-video">
+            <!-- YouTube embed will go here -->
+        </div>
+        <button id="video-modal-close" class="absolute -top-2 -right-2 bg-white rounded-full p-1 text-slate-500 hover:text-slate-800">
+            <i data-lucide="x-circle" class="w-8 h-8"></i>
+        </button>
+    </div>
+
+    <!-- New Post Modal -->
+    <div id="new-post-modal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-lg bg-white rounded-xl shadow-lg z-50 hidden p-6">
+        <h2 class="text-2xl font-bold mb-4">Create a New Post</h2>
+        <form>
+            <div class="mb-4">
+                <label for="post-title" class="block text-sm font-medium text-slate-700 mb-1">Title</label>
+                <input type="text" id="post-title" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Enter a descriptive title">
+            </div>
+            <div class="mb-4">
+                <label for="post-body" class="block text-sm font-medium text-slate-700 mb-1">Your Message</label>
+                <textarea id="post-body" rows="6" class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Share your thoughts..."></textarea>
+            </div>
+            <div class="flex justify-end gap-4">
+                <button type="button" id="new-post-cancel" class="text-slate-600 hover:text-slate-900">Cancel</button>
+                <button type="submit" class="bg-primary-dark text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-700">Post Anonymously</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Chat Widget -->
+    <div id="chat-widget" class="hidden fixed bottom-20 right-5 w-80 sm:w-96 bg-white rounded-xl shadow-2xl z-40 flex flex-col">
+        <div class="p-3 border-b bg-slate-50 rounded-t-xl flex justify-between items-center">
+            <h2 class="text-lg font-bold">AI First-Aid Chat</h2>
+            <button id="chat-widget-close" class="text-slate-500 hover:text-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div id="chat-history" class="flex-1 p-4 space-y-4 overflow-y-auto h-80 chat-history">
+            <!-- Messages will appear here -->
+            <div class="flex justify-start">
+                <div class="bg-slate-200 p-3 rounded-lg max-w-xs">
+                    <p>Hello! I'm here to help. What's on your mind? You can also choose one of the common topics below.</p>
+                </div>
+            </div>
+        </div>
+        <div class="p-2 border-t">
+            <div class="flex flex-wrap gap-1 mb-2">
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Feeling Anxious</button>
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Stressed</button>
+                <button class="chat-prompt-btn bg-blue-100 text-blue-800 text-xs py-1 px-2 rounded-full">Feeling Sad</button>
+            </div>
+            <div class="flex items-center">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 p-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <button id="chat-send-btn" class="bg-primary-dark text-white p-2 rounded-r-lg hover:bg-blue-700">
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Toggle Button -->
+    <button id="chat-toggle-btn" class="hidden fixed bottom-5 right-5 bg-primary-dark text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg z-40 hover:bg-blue-700">
+        <i data-lucide="message-circle" class="w-8 h-8"></i>
+    </button>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // --- Login Logic ---
+            const loginSection = document.getElementById('login');
+            const appContainer = document.getElementById('app-container');
+            const loginTabs = document.querySelectorAll('.login-tab');
+            const loginForms = document.querySelectorAll('.login-form');
+
+            loginTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    loginTabs.forEach(t => t.classList.remove('active-tab', 'border-primary', 'text-primary'));
+                    tab.classList.add('active-tab', 'border-primary', 'text-primary');
+
+                    const target = document.getElementById(tab.dataset.target);
+
+                    loginForms.forEach(form => form.classList.add('hidden'));
+                    if(target) target.classList.remove('hidden');
+                });
+            });
+
+            const performLogin = (e) => {
+                e.preventDefault();
+                const role = e.target.id;
+                loginSection.classList.add('hidden');
+
+                if (role === 'admin-login') {
+                    const adminDashboard = document.getElementById('admin-dashboard');
+                    const adminLogoutBtn = document.getElementById('admin-logout-btn');
+                    adminDashboard.classList.remove('hidden');
+                    adminLogoutBtn.addEventListener('click', () => {
+                        adminDashboard.classList.add('hidden');
+                        loginSection.classList.remove('hidden');
+                    }, { once: true }); // Use { once: true } if this setup runs multiple times
+                } else {
+                    appContainer.classList.remove('hidden');
+                    initializeApp();
+                }
+            };
+
+            loginForms.forEach(form => {
+                form.addEventListener('submit', performLogin);
+            });
+
+
+            // --- Main App Initialization ---
+            const initializeApp = () => {
+                const sections = document.querySelectorAll('.section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const ctaButtons = document.querySelectorAll('.cta-button');
+
+            const chatWidget = document.getElementById('chat-widget');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatWidgetClose = document.getElementById('chat-widget-close');
+
+            const openChatWidget = () => {
+                chatWidget.classList.remove('hidden');
+                chatToggleBtn.classList.add('hidden');
+            }
+
+            const closeChatWidget = () => {
+                chatWidget.classList.add('hidden');
+                chatToggleBtn.classList.remove('hidden');
+            }
+
+            chatToggleBtn.addEventListener('click', openChatWidget);
+            chatWidgetClose.addEventListener('click', closeChatWidget);
+
+            const navigateTo = (hash) => {
+                // Handle chat navigation separately
+                if (hash === '#chat') {
+                    navigateTo('#home');
+                    openChatWidget();
+                    return;
+                }
+
+                // Hide all sections
+                sections.forEach(section => {
+                    section.classList.remove('active');
+                });
+
+                // Show/hide chat toggle button based on page
+                if (hash === '#home') {
+                    chatToggleBtn.classList.remove('hidden');
+                } else {
+                    chatToggleBtn.classList.add('hidden');
+                    chatWidget.classList.add('hidden'); // also hide widget if open
+                }
+
+                // Show the target section
+                const targetSection = document.querySelector(hash);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                }
+
+                // Update active link
+                navLinks.forEach(link => {
+                    if (link.getAttribute('href') === hash) {
+                        link.classList.add('active-link');
+                    } else {
+                        link.classList.remove('active-link');
+                    }
+                });
+
+                // Close mobile menu after navigation
+                mobileMenu.classList.add('hidden');
+
+                // Scroll to top of page
+                window.scrollTo(0, 0);
+            };
+
+            // Navigation for nav links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    navigateTo(targetId);
+                    // Update URL hash without jumping
+                    history.pushState(null, null, targetId);
+                });
+            });
+
+            // Navigation for CTA buttons
+            ctaButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = `#${button.getAttribute('data-target')}`;
+                    navigateTo(targetId);
+                    history.pushState(null, null, targetId);
+                });
+            });
+
+            // Mobile menu toggle
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // Handle browser back/forward
+            window.addEventListener('popstate', () => {
+                if (window.location.hash) {
+                    navigateTo(window.location.hash);
+                } else {
+                    navigateTo('#home');
+                }
+            });
+
+            // Initial page load
+            if (window.location.hash) {
+                navigateTo(window.location.hash);
+            } else {
+                navigateTo('#home');
+            }
+
+            // --- Chatbot Logic ---
+            const chatHistory = document.getElementById('chat-history');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatPromptBtns = document.querySelectorAll('.chat-prompt-btn');
+
+            const addMessage = (message, sender) => {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('flex', 'mb-4');
+
+                const bubble = document.createElement('div');
+                bubble.classList.add('p-3', 'rounded-lg', 'max-w-xs');
+                bubble.textContent = message;
+
+                if (sender === 'user') {
+                    messageElement.classList.add('justify-end');
+                    bubble.classList.add('bg-primary-dark', 'text-white');
+                } else {
+                    messageElement.classList.add('justify-start');
+                    bubble.classList.add('bg-slate-200', 'text-slate-800');
+                }
+
+                messageElement.appendChild(bubble);
+                chatHistory.appendChild(messageElement);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+            };
+
+            const getBotResponse = (userMessage) => {
+                const lowerCaseMessage = userMessage.toLowerCase();
+                if (lowerCaseMessage.includes('anxious')) {
+                    return botResponses.anxious;
+                } else if (lowerCaseMessage.includes('stress')) {
+                    return botResponses.stress;
+                } else if (lowerCaseMessage.includes('sad')) {
+                    return botResponses.sad;
+                }
+                return botResponses.default;
+            };
+
+            const handleUserMessage = async (message) => {
+                if (!message.trim()) return;
+
+                addMessage(message, 'user');
+                chatInput.value = '';
+
+                try {
+                    const response = await fetch('/api/chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ message: message }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const data = await response.json();
+                    const botMessage = data.reply;
+                    addMessage(botMessage, 'bot');
+
+                } catch (error) {
+                    console.error('Error fetching bot response:', error);
+                    addMessage("I'm having trouble connecting to my brain right now. Please try again in a moment.", 'bot');
+                }
+            };
+
+            chatSendBtn.addEventListener('click', () => handleUserMessage(chatInput.value));
+            chatInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    handleUserMessage(chatInput.value);
+                }
+            });
+
+            chatPromptBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    handleUserMessage(btn.textContent);
+                });
+            });
+
+            // --- Booking System Logic ---
+            const bookingStep1 = document.getElementById('booking-step-1');
+            const bookingStep2 = document.getElementById('booking-step-2');
+            const bookingStep3 = document.getElementById('booking-step-3');
+
+            const serviceBtns = document.querySelectorAll('.booking-service-btn');
+            const timeBtns = document.querySelectorAll('.booking-time-btn');
+            const backBtn = document.getElementById('booking-back-btn');
+            const bookAnotherBtn = document.getElementById('book-another-btn');
+            const confirmationMsg = document.getElementById('booking-confirmation-msg');
+
+            const showBookingStep = (step) => {
+                bookingStep1.classList.add('hidden');
+                bookingStep2.classList.add('hidden');
+                bookingStep3.classList.add('hidden');
+                document.getElementById(`booking-step-${step}`).classList.remove('hidden');
+            };
+
+            serviceBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    showBookingStep(2);
+                });
+            });
+
+            timeBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const selectedTime = btn.textContent;
+                    confirmationMsg.textContent = `Your session at ${selectedTime} is confirmed. You will receive a confidential confirmation email shortly.`;
+                    showBookingStep(3);
+                });
+            });
+
+            backBtn.addEventListener('click', () => showBookingStep(1));
+            bookAnotherBtn.addEventListener('click', () => showBookingStep(1));
+
+            // --- Resources & Modal Logic ---
+            const resourceTabs = document.querySelectorAll('.resource-tab');
+            const resourceContents = document.querySelectorAll('.resource-content');
+
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const articleModal = document.getElementById('article-modal');
+            const articleModalClose = document.getElementById('article-modal-close');
+            const resourceCards = document.querySelectorAll('.resource-card');
+
+            const videoModal = document.getElementById('video-modal');
+            const videoModalContent = document.getElementById('video-modal-content');
+            const videoModalClose = document.getElementById('video-modal-close');
+            const videoCards = document.querySelectorAll('.video-card');
+
+            const newPostBtn = document.getElementById('new-post-btn');
+            const newPostModal = document.getElementById('new-post-modal');
+            const newPostCancelBtn = document.getElementById('new-post-cancel');
+
+
+            // Tab switching
+            resourceTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    resourceTabs.forEach(t => t.classList.remove('active-tab', 'border-primary', 'text-primary'));
+                    tab.classList.add('active-tab', 'border-primary', 'text-primary');
+
+                    const targetContentId = `${tab.textContent.toLowerCase().split(' ')[0]}-content`;
+                    resourceContents.forEach(content => {
+                        if (content.id === targetContentId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const openModal = (modal) => {
+                modal.classList.remove('hidden');
+                modalBackdrop.classList.remove('hidden');
+            };
+
+            const closeModal = (modal) => {
+                modal.classList.add('hidden');
+                modalBackdrop.classList.add('hidden');
+                // Special handling for video modal to stop playback
+                if (modal === videoModal) {
+                    videoModalContent.innerHTML = '';
+                }
+            };
+
+            // Article Modal
+            const articleModalTitle = document.getElementById('article-modal-title');
+            const articleModalContent = document.getElementById('article-modal-content');
+            resourceCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const title = card.dataset.articleTitle;
+                    const url = card.dataset.articleUrl;
+                    if (title && url) {
+                        articleModalTitle.textContent = title;
+                        articleModalContent.innerHTML = `<p>You are being redirected to an external article. Click the link below to continue.</p><a href="${url}" target="_blank" rel="noopener noreferrer" class="text-primary-dark font-bold hover:underline mt-4 inline-block">Read Full Article &rarr;</a>`;
+                        openModal(articleModal);
+                    }
+                });
+            });
+            articleModalClose.addEventListener('click', () => closeModal(articleModal));
+
+            // Video Modal
+            videoCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const videoUrl = card.dataset.videoUrl;
+                    if (videoUrl) {
+                        videoModalContent.innerHTML = `<iframe class="w-full h-full" src="${videoUrl}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                        openModal(videoModal);
+                    }
+                });
+            });
+            videoModalClose.addEventListener('click', () => closeModal(videoModal));
+
+            // New Post Modal
+            newPostBtn.addEventListener('click', () => openModal(newPostModal));
+            newPostCancelBtn.addEventListener('click', () => closeModal(newPostModal));
+            newPostModal.querySelector('form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                closeModal(newPostModal);
+            });
+
+            // Close modals with backdrop click
+            modalBackdrop.addEventListener('click', () => {
+                closeModal(articleModal);
+                closeModal(videoModal);
+                closeModal(newPostModal);
+            });
+        }
+        });
+    </script>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <main id="admin-dashboard" class="hidden bg-slate-100 min-h-screen">
+        <div class="flex">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-slate-800 text-white p-6 flex-shrink-0">
+                <div class="flex items-center space-x-2 mb-10">
+                    <div class="bg-primary-dark rounded-full p-1 text-white">
+                        <i data-lucide="sprout" class="w-8 h-8"></i>
+                    </div>
+                    <span class="text-2xl font-bold">MindWell</span>
+                </div>
+                <nav class="space-y-4">
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg bg-slate-700 font-semibold"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="users"></i> Students</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="calendar"></i> Bookings</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="message-circle"></i> Messages</a>
+                    <a href="#" class="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-700"><i data-lucide="settings"></i> Settings</a>
+                </nav>
+            </aside>
+            <!-- Main content -->
+            <div class="flex-1 p-10">
+                <header class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-slate-800">Admin Dashboard</h1>
+                    <button id="admin-logout-btn" class="flex items-center gap-2 text-slate-600 hover:text-primary-dark">
+                        <i data-lucide="log-out" class="w-5 h-5"></i> Logout
+                    </button>
+                </header>
+
+                <!-- Stat Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="users" class="w-12 h-12 text-blue-500"></i>
+                        <div>
+                            <p class="text-slate-500">Total Students</p>
+                            <p class="text-3xl font-bold">1,250</p>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="calendar-check" class="w-12 h-12 text-green-500"></i>
+                        <div>
+                            <p class="text-slate-500">Active Sessions</p>
+                            <p class="text-3xl font-bold">82</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="user-plus" class="w-12 h-12 text-yellow-500"></i>
+                        <div>
+                            <p class="text-slate-500">New Signups (Month)</p>
+                            <p class="text-3xl font-bold">104</p>
+                        </div>
+                    </div>
+                     <div class="bg-white p-6 rounded-xl shadow-md flex items-center gap-4">
+                        <i data-lucide="alert-circle" class="w-12 h-12 text-red-500"></i>
+                        <div>
+                            <p class="text-slate-500">Open Alerts</p>
+                            <p class="text-3xl font-bold">3</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Table and Chart -->
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Recent Student Activity</h2>
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="p-2">Student ID</th>
+                                    <th class="p-2">Last Login</th>
+                                    <th class="p-2">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU5821</td>
+                                    <td class="p-2">2024-09-05 10:30 AM</td>
+                                    <td class="p-2"><span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Active</span></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU9434</td>
+                                    <td class="p-2">2024-09-05 09:15 AM</td>
+                                    <td class="p-2"><span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Active</span></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="p-2 font-mono">#STU1092</td>
+                                    <td class="p-2">2024-09-04 03:00 PM</td>
+                                    <td class="p-2"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Inactive</span></td>
+                                </tr>
+                                 <tr>
+                                    <td class="p-2 font-mono">#STU7365</td>
+                                    <td class="p-2">2024-09-02 11:45 AM</td>
+                                    <td class="p-2"><span class="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-full">Flagged</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md">
+                        <h2 class="text-xl font-bold mb-4">Platform Usage</h2>
+                        <div class="bg-slate-100 h-64 flex items-center justify-center rounded-lg">
+                            <p class="text-slate-500">[Chart Placeholder]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
